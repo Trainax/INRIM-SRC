@@ -1,16 +1,14 @@
-# Generatore segnale orario
+# Plugin generatore di Segnale orario Rai Codificato (Segnale SRC) per Audacity
 
-Il programma è un plug-in per Audacity che genera un segnale orario RAI valido, composto quindi dalla sequenza binaria (“trillo”) e dalla serie di segnali acustici che lo contraddistinguono.
-
-## Progetto archiviato
-Sono giunte molte idee e richieste per email e su GitHub e ringrazio tutti gli utenti, purtroppo le opzioni di Audacity + Nyquist sono molto limitate e sarebbe necessaria una riscrittura.
-Vi invito a provare `srcclock` che è una applicazione capace sia di generare che di decodificare l'SRC, la potete trovare qui: https://github.com/tornio/srcclock (o il fork https://github.com/boyska/srcclock che sistema la compilazione)
+Questo è un plug-in per Audacity che genera un Segnale orario Rai Codificato con le informazioni di data ed ora fornite dall'utente. Il segnale generato è composto da:
+- Un codice di data suddiviso in due segmenti di informazione
+- 6 impulsi acustici di riferimento
 
 ## Installazione
 
-Per installare il plugin è sufficiente copiare il file `INRIM_SRC.ny` in una directory nota ad Audacious: in Linux, per installare il plug-in a un singolo utente il file va copiato nella directory `~/.audacity-files/plug-ins/` (creandola se non esiste).
+Per installare il plugin è sufficiente copiare il file `INRIM_SRC.ny` nella cartella `Plug-Ins` all'interno della cartella d'installazione di Audacity.
 
-In caso di dubbio consultare la [pagina dedicata del manuale di Audacity](https://wiki.audacityteam.org/wiki/Download_Nyquist_Plugins#Installing_Plugins).
+In caso di dubbi consultare la [pagina dedicata del manuale di Audacity](https://support.audacityteam.org/basics/installing-plugins#installing-nyquist-plugins).
 
 ## Utilizzo
 
@@ -22,4 +20,7 @@ L'audio così generato si sostituirà alla selezione esistente o verrà creata u
 
 ## Maggiori informazioni
 
-Per maggiori informazioni sul Segnale RAI Codificato è possibile visitare la [pagina su Wikipedia](https://it.wikipedia.org/wiki/Segnale_orario) oppure una versione archiviata della [pagina ufficiale](https://web.archive.org/web/20161223104950/http://www.inrim.it:80/res/tf/src_i.shtml) dal sito web dell'INRiM.
+Per maggiori informazioni sul Segnale orario Rai Codificato è possibile visitare:
+- La [pagina su Wikipedia](https://it.wikipedia.org/wiki/Segnale_orario)
+- Una versione archiviata della [pagina ufficiale](https://web.archive.org/web/20161223104950/http://www.inrim.it:80/res/tf/src_i.shtml) dal sito web dell'INRiM.
+- Una versione archiviata della [documentazione](https://web.archive.org/web/20170425070119/http://toi.inrim.it/ist/it/iensrc.html) dal sito web dell'INRiM.
