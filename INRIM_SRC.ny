@@ -1,9 +1,10 @@
 ;nyquist plug-in
-;version 3
-;type generate
 ;name "Segnale Orario SRC..."
-;action "Generazione del segnale SRC..."
-;info "Generatore di segnale orario RAI-SRC.\nPer maggiori informazioni visitare la pagina dedicata su Wikipedia disponibile al seguente link: https://it.wikipedia.org/wiki/Segnale_orario\n\nPer utilizzare questo segnale in maniera corretta si deve fare in modo che l'inizio dell'ultimo segnale\nacustico corrisponda all'inizio del minuto successivo a cui il segnale fa riferimento;\nequivalentemente l'inizio del suono generato deve essere allineato con il secondo 52 del minuto corrente.\n\nPlug-in rilasciato con licenza GPL 2 da David Costa <david@zarel.net>.\nRealizzato per O.R.S.A. Officine Radiotecniche Società Anonima."
+;type generate
+;version 4
+;author "David Costa <david@zarel.net>. Realizzato per O.R.S.A. Officine Radiotecniche Società Anonima"
+;copyright "Released under terms of the GNU General Public License version 2"
+;release "1.0.0"
 
 ;; I controlli sono organizzati per tipo
 ;; Data - Ora - Avvisi
@@ -12,15 +13,15 @@
 ;control anno "Anno" int "" 88 0 99
 ;control mese "Mese" int "" 4 1 12
 ;control giorno "Giorno" int "" 22 1 31
-;control settimana "Nome del giorno" choice "Lun.,Mar.,Mer.,Gio.,Ven.,Sab.,Dom." "Ven."
+;control settimana "Nome del giorno" choice "Lunedì,Martedì,Mercoledì,Giovedì,Venerdì,Sabato,Domenica" "Venerdì"
 
 ;; Controlli impostazione orario
 ;control ore "Ora" int "" 19 0 23
 ;control minuti "Minuti" int "" 0 0 59
-;control legale "Ora estiva (DST)" choice "Ora legale,Ora solare" "Ora solare"
+;control legale "Ora legale / solare" choice "Ora legale (CEST),Ora solare (CET)" "Ora solare (CET)"
 
 ;; Controlli sugli avvisi
-;control avviso-legale "Avviso cambio DST" choice "Nessun cambio nei prossimi 7 giorni,Previsto un cambio entro i prossimi 6 giorni,Previsto un cambio entro i prossimi 5 giorni,Previsto un cambio entro i prossimi 4 giorni,Previsto un cambio entro i prossimi 3 giorni,Previsto un cambio entro i prossimi 2 giorni,Previsto un cambio entro un giorno,Cambio dall'ora solare (02.00) a quella legale (03.00) o viceversa oggi" "Nessun cambio nei prossimi 7 giorni"
+;control avviso-legale "Avviso cambio ora legale <-> solare" choice "Nessun cambio nei prossimi 7 giorni,Previsto un cambio entro i prossimi 6 giorni,Previsto un cambio entro i prossimi 5 giorni,Previsto un cambio entro i prossimi 4 giorni,Previsto un cambio entro i prossimi 3 giorni,Previsto un cambio entro i prossimi 2 giorni,Previsto un cambio entro un giorno,Cambio dall'ora solare (02:00) a quella legale (03:00) o viceversa oggi" "Nessun cambio nei prossimi 7 giorni"
 ;control avviso-intercalare "Avviso secondo intercalare" choice "Nessuno previsto,Anticipo di 1 secondo alla fine del mese,Ritardo di 1 secondo alla fine del mese" "Nessuno previsto"
 
 ;; Converte secondi in millisecondi
@@ -37,8 +38,7 @@
 
 ;; Calcolo della parità, grazie a una risposta di stackoverflow
 ;; http://stackoverflow.com/questions/9039841/removing-characters-from-a-string-in-nyquist/9042334
-;; Ritorna "0" se il numero di 1 è dispari, "1" se il numero di 1 è pari
-;; realizzando così il bit di disparità necessario all'SRC
+;; Ritorna "0" se il numero di 1 è dispari, "1" se il numero di 1 è pari realizzando così il bit di disparità necessario al SRC
 (defun string->list (a-string)
   (let ((collector nil)
 		(stream (make-string-input-stream a-string)))
@@ -68,14 +68,14 @@
 	)
   )
 
-;; Modula una stringa binaria con FSK
+;; Modula una stringa binaria con FSK (Frequency-shift keying)
 (defun fsk (stringa)
   (seqrep (i (length stringa))
 		  (render-char (char stringa i))
 		  )
   )
 
-;; Converte una cifra nel corrispondente BCD
+;; Converte una cifra nel corrispondente BCD (Binary-coded decimal)
 (defun BCD (digit)
 
   (case digit
@@ -191,7 +191,7 @@
 (print (strcat "PA=" (=PA)))
 
 ;; Generazione effettiva del suono
-;; Combino i blocchi, mettendoli al posto giusto
+;; Combino i blocchi, mettendoli nel posto giusto
 (seq
   (primo-blocco)
   (s-rest (ms 40))
