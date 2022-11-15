@@ -186,9 +186,13 @@
 (defun secondo-blocco () (seq (*ID2) (*AN) (*SE) (*SI) (*PA)))
 
 ;; Debug
-(print (strcat "P1=" (=P1)))
-(print (strcat "P2=" (=P2)))
-(print (strcat "PA=" (=PA)))
+(print (strcat "Primo segmento => " (=ID1) (=OR) (=MI) (=OE) (=P1) (=ME) (=GM) (=GS) (=P2)))
+(print (strcat "Primo parity bit del primo segmento => " (=P1)))
+(print (strcat "Secondo parity bit del primo segmento => " (=P2)))
+(print "") ;;Print vuota per separare l'output di debug
+(print (strcat "Secondo segmento => " (=ID2) (=AN) (=SE) (=SI) (=PA)))
+(print (strcat "Parity bit del secondo segmento => " (=PA)))
+;;(print (strcat "Giorno della settimana: " (=WEEKDAY)))
 
 ;; Generazione effettiva del suono
 ;; Combino i blocchi, mettendoli nel posto giusto
