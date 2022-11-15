@@ -192,7 +192,6 @@
 (print "") ;;Print vuota per separare l'output di debug
 (print (strcat "Secondo segmento => " (=ID2) (=AN) (=SE) (=SI) (=PA)))
 (print (strcat "Parity bit del secondo segmento => " (=PA)))
-;;(print (strcat "Giorno della settimana: " (=WEEKDAY)))
 
 ;; Generazione effettiva del suono
 ;; Combino i blocchi, mettendoli nel posto giusto
