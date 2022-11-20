@@ -4,7 +4,7 @@
 ;version 4
 ;author "David Costa <david@zarel.net>. Realizzato per O.R.S.A. Officine Radiotecniche Società Anonima"
 ;copyright "Released under terms of the GNU General Public License version 2"
-;release "1.0.0"
+;release "1.0.1"
 
 ;; I controlli sono organizzati per tipo
 ;; Data - Ora - Avvisi
@@ -36,16 +36,19 @@
 ;; Frequenza del bit "1" in Hz
 (setf freq1 2500)
 
-;; Calcolo della parità, grazie a una risposta di stackoverflow
-;; http://stackoverflow.com/questions/9039841/removing-characters-from-a-string-in-nyquist/9042334
+;; Calcolo della parità, grazie a una risposta di Stack Overflow
+;; https://stackoverflow.com/a/57779536
 ;; Ritorna "0" se il numero di 1 è dispari, "1" se il numero di 1 è pari realizzando così il bit di disparità necessario al SRC
-(defun string->list (a-string)
-  (let ((collector nil)
-		(stream (make-string-input-stream a-string)))
-	(dotimes (c (length a-string) (reverse collector))
-	  (setf collector (cons (read-char stream) collector)))))
 
-(defun count-ones (stringa) (length (remove #\1 (string->list stringa) :test-not 'char=)))
+(defun remove-char (character sequence)
+  (let ((out ""))
+    (dotimes (i (length sequence) out)
+      (setf ch (char sequence i))
+      (unless (char= ch character)
+        (setf out (format nil "~a~a" out ch))))))
+
+(defun count-ones (stringa) (length (remove-char #\0 stringa)))
+
 (defun get-parity (stringa)
   (if (= 1 (rem (count-ones stringa) 2)) "0" "1")
   )
