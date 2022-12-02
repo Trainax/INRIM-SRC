@@ -2,18 +2,20 @@
 ;name "Segnale Orario SRC..."
 ;type generate
 ;version 4
-;author "David Costa <david@zarel.net>. Realizzato per O.R.S.A. Officine Radiotecniche Società Anonima"
+
+;; Originariamente realizzato da David Costa (https://github.com/zarelit) per O.R.S.A. Officine Radiotecniche Società Anonima
+
+;author "Zarelit (https://github.com/zarelit) e Trainax (https://github.com/Trainax)"
 ;copyright "Released under terms of the GNU General Public License version 2"
-;release "1.0.1"
+;release "1.1.0"
 
 ;; I controlli sono organizzati per tipo
 ;; Data - Ora - Avvisi
 
 ;; Controlli impostazione data
-;control anno "Anno" int "" 88 0 99
+;control anno "Anno" int "" 1988 1900 2099
 ;control mese "Mese" int "" 4 1 12
 ;control giorno "Giorno" int "" 22 1 31
-;control settimana "Nome del giorno" choice "Lunedì,Martedì,Mercoledì,Giovedì,Venerdì,Sabato,Domenica" "Venerdì"
 
 ;; Controlli impostazione orario
 ;control ore "Ora" int "" 19 0 23
@@ -149,6 +151,72 @@
 	)
   )
 
+;; Funzione di utilità: controllo se l'anno è bisestile
+(defun is-leap-year (year)
+  (+ (+ (if (= 0 (rem year 4)) 1 0) (if (= 0 (rem year 100)) -1 0)) (if (= 0 (rem year 400)) 1 0))
+  )
+
+;;Calcolo del giorno della settimana a partire dalla data
+(defun key-number (month year)
+  (case month
+  (1 (if (= 0 (is-leap-year year)) 1 0))
+  (2 (if (= 0 (is-leap-year year)) 4 3))
+  (3 4)
+  (4 0)
+  (5 2)
+  (6 5)
+  (7 0)
+  (8 3)
+  (9 6)
+  (10 1)
+  (11 4)
+  (12 6)
+  )
+  )
+
+;; Converte i giorni da: domenica = 1, lunedì = 2, ..., sabato = 0 a domenica = 6, lunedì = 0, ..., sabato = 5
+(defun select-day (day-number)
+  (case day-number
+  (1 6)
+  (2 0)
+  (3 1)
+  (4 2)
+  (5 3)
+  (6 4)
+  (0 5)
+  )
+)
+
+(defun calculate-day (year month day)
+  (if (>= year 2000) (select-day (rem (- (+ (+ (+ (rem anno 100) (/ (rem anno 100) 4)) giorno) (key-number mese anno)) 1) 7)) (select-day (rem (+ (+ (+ (rem anno 100) (/ (rem anno 100) 4)) giorno) (key-number mese anno)) 7)))
+)
+
+;; Funzione di utilità: da int a string
+;; Grazie a: https://forum.audacityteam.org/viewtopic.php?t=38214
+(defun number-to-string (number)
+  (format nil "~a" number))
+
+;; Funzione di utilità: nome del giorno
+(defun nome-giorno (n)
+  (case n
+  (0 "Lun.")
+  (1 "Mart.")
+  (2 "Merc.")
+  (3 "Giov.")
+  (4 "Ven.")
+  (5 "Sab.")
+  (6 "Dom.")
+  )
+)
+
+;; Funzione di utilità: da bool a S/N (Sì/No)
+(defun vero-falso (s)
+  (case s
+  (0 "N")
+  (1 "S")
+  )
+)
+
 ;; Genero il segnale nelle sue parti
 ;; = significa stringa binaria, * è un behavior
 (defun =ID1 () "01")
@@ -167,7 +235,7 @@
 (defun *ME () (fsk (=ME)))
 (defun =GM () (BCD2 giorno 2))
 (defun *GM () (fsk (=GM)))
-(defun =GS () (giorno-settimana settimana))
+(defun =GS () (giorno-settimana (calculate-day anno mese giorno)))
 (defun *GS () (fsk (=GS)))
 
 (defun =P2 () (get-parity (strcat (=ME) (=GM) (=GS))))
@@ -175,7 +243,7 @@
 
 (defun =ID2 () "10")
 (defun *ID2 () (fsk (=ID2)))
-(defun =AN () (BCD2 anno 4))
+(defun =AN () (BCD2 (rem anno 100) 4))
 (defun *AN () (fsk (=AN)))
 (defun =SE () (avviso-legale-bin avviso-legale))
 (defun *SE () (fsk (=SE)))
@@ -195,6 +263,13 @@
 (print "") ;;Print vuota per separare l'output di debug
 (print (strcat "Secondo segmento => " (=ID2) (=AN) (=SE) (=SI) (=PA)))
 (print (strcat "Parity bit del secondo segmento => " (=PA)))
+(print "")
+(print (strcat "Giorno: " (number-to-string giorno)))
+(print (strcat "Mese: " (number-to-string mese)))
+(print (strcat "Anno: " (number-to-string anno)))
+(print "")
+(print (strcat "Anno bisestile: " (vero-falso (is-leap-year anno))))
+(print (strcat "Giorno della settimana: " (nome-giorno (calculate-day anno mese giorno))))
 
 ;; Generazione effettiva del suono
 ;; Combino i blocchi, mettendoli nel posto giusto
