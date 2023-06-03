@@ -7,7 +7,7 @@
 
 ;author "Zarelit (https://github.com/zarelit) e Trainax (https://github.com/Trainax)"
 ;copyright "Released under terms of the GNU General Public License version 2"
-;release "1.1.0"
+;release "1.1.1"
 
 ;; I controlli sono organizzati per tipo
 ;; Data - Ora - Avvisi
@@ -156,7 +156,7 @@
   (+ (+ (if (= 0 (rem year 4)) 1 0) (if (= 0 (rem year 100)) -1 0)) (if (= 0 (rem year 400)) 1 0))
   )
 
-;;Calcolo del giorno della settimana a partire dalla data
+;; Calcolo del giorno della settimana a partire dalla data
 (defun key-number (month year)
   (case month
   (1 (if (= 0 (is-leap-year year)) 1 0))
@@ -193,7 +193,7 @@
 
 ;; Funzione di utilità: da int a string
 ;; Grazie a: https://forum.audacityteam.org/viewtopic.php?t=38214
-(defun number-to-string (number)
+(defun int-to-string (number)
   (format nil "~a" number))
 
 ;; Funzione di utilità: nome del giorno
@@ -206,14 +206,6 @@
   (4 "Ven.")
   (5 "Sab.")
   (6 "Dom.")
-  )
-)
-
-;; Funzione di utilità: da bool a S/N (Sì/No)
-(defun vero-falso (s)
-  (case s
-  (0 "N")
-  (1 "S")
   )
 )
 
@@ -260,16 +252,13 @@
 (print (strcat "Primo segmento => " (=ID1) (=OR) (=MI) (=OE) (=P1) (=ME) (=GM) (=GS) (=P2)))
 (print (strcat "Primo parity bit del primo segmento => " (=P1)))
 (print (strcat "Secondo parity bit del primo segmento => " (=P2)))
-(print "") ;;Print vuota per separare l'output di debug
+(print "")
 (print (strcat "Secondo segmento => " (=ID2) (=AN) (=SE) (=SI) (=PA)))
 (print (strcat "Parity bit del secondo segmento => " (=PA)))
 (print "")
-(print (strcat "Giorno: " (number-to-string giorno)))
-(print (strcat "Mese: " (number-to-string mese)))
-(print (strcat "Anno: " (number-to-string anno)))
+(print (strcat "Data: " (nome-giorno (calculate-day anno mese giorno)) " " (int-to-string giorno) "/" (int-to-string mese) "/" (int-to-string anno)))
 (print "")
-(print (strcat "Anno bisestile: " (vero-falso (is-leap-year anno))))
-(print (strcat "Giorno della settimana: " (nome-giorno (calculate-day anno mese giorno))))
+(if (= 1 (is-leap-year anno)) (print "Anno bisestile") (print "Anno non bisestile"))
 
 ;; Generazione effettiva del suono
 ;; Combino i blocchi, mettendoli nel posto giusto
